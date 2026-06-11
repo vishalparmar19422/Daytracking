@@ -1,0 +1,14 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Secrets — NEVER commit these (DB password, JWT secret live here)
+.env
+.env.local
+.env.*.local
+
+# Logs / OS cruft
+*.log
+.DS_Store

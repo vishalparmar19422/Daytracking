@@ -5,6 +5,7 @@ import MembersPanel from './MembersPanel'
 import NoteComposer from './NoteComposer'
 import Filters from './Filters'
 import NotesList from './NotesList'
+import Avatar from './Avatar'
 
 const EMPTY_FILTERS = { date: '', authorId: '', query: '' }
 
@@ -44,7 +45,8 @@ export default function GroupView({ groupId, onBack }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-900 text-slate-100 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-950 text-slate-400 flex items-center justify-center gap-3">
+        <span className="w-4 h-4 rounded-full border-2 border-slate-700 border-t-indigo-400 animate-spin" />
         Loading…
       </div>
     )
@@ -52,7 +54,7 @@ export default function GroupView({ groupId, onBack }) {
 
   if (!group) {
     return (
-      <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col items-center justify-center gap-4">
+      <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col items-center justify-center gap-4">
         <p>Group not found.</p>
         <button onClick={onBack} className="text-indigo-400 hover:text-indigo-300">
           ← Back to groups
@@ -65,19 +67,28 @@ export default function GroupView({ groupId, onBack }) {
   const memberById = Object.fromEntries(members.map((m) => [m.id, m.username]))
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100">
-      <header className="border-b border-slate-800">
-        <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between gap-4">
+    <div className="min-h-screen bg-slate-950 text-slate-100">
+      <header className="sticky top-0 z-10 border-b border-slate-800 bg-slate-950/80 backdrop-blur">
+        <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3 min-w-0">
             <button
               onClick={onBack}
-              className="text-slate-400 hover:text-slate-200 border border-slate-700 rounded-lg px-3 py-1 text-sm shrink-0"
+              className="grid place-items-center w-9 h-9 text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-700 rounded-lg shrink-0 transition-colors"
+              title="Back to groups"
             >
-              ← Groups
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
             </button>
-            <h1 className="text-xl font-bold truncate">{group.name}</h1>
+            <div className="min-w-0">
+              <h1 className="text-lg font-bold truncate leading-tight">{group.name}</h1>
+              <p className="text-xs text-slate-500">
+                {members.length} {members.length === 1 ? 'member' : 'members'}
+              </p>
+            </div>
           </div>
-          <span className="text-sm text-slate-400 shrink-0">{user.username}</span>
+          <div className="flex items-center gap-2 shrink-0">
+            <Avatar name={user.username} size="sm" />
+            <span className="hidden sm:inline text-sm text-slate-300 font-medium">{user.username}</span>
+          </div>
         </div>
       </header>
 
@@ -95,6 +106,7 @@ export default function GroupView({ groupId, onBack }) {
 
         <section className="flex flex-col gap-6 min-w-0">
           <NoteComposer
+            currentUser={user.username}
             onAdd={async ({ text, date }) => {
               await store.addNote(groupId, user.id, { text, date })
               await loadNotes()

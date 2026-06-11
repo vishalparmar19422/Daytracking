@@ -1,1 +1,9 @@
 @import "tailwindcss";
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  background-color: #020617; /* slate-950 — avoids a white flash before React mounts */
+}
